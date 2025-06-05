@@ -1,0 +1,7 @@
+.sidebar {
+  background-color: black;
+  color: white;
+  height: 100px;
+  width: 25%;
+  word-break: break-all;
+}

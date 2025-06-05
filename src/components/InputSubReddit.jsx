@@ -4,8 +4,9 @@ const InputSubReddit = () => {
     const [subreddit, setSubReddit] = useState('')
     const url = `https://www.reddit.com/r/${subreddit}.json`;
 
-    const [dataFetched, setData]= useState([])
+    const [dataFetched, setFetchedData]= useState()
     const [inputValue, setInputValue] = useState();
+
 
     const handleAddReddit = (e) => {
         e.preventDefault();
@@ -18,24 +19,30 @@ const InputSubReddit = () => {
         async function fetchReddit(){
             const data = await fetch(url);
             const resp = await data.json();
-            setData(resp.data.children.data);
+            setFetchedData(resp);
         }
         fetchReddit()
     }, [subreddit])
 
-    console.log("Fetched data", dataFetched);
 
-    const eleData = dataFetched.map(function(item){
-        return (
-            console.log(item.title)
+    if(dataFetched){
+        console.log("Fetched data", dataFetched);
+    }
+
+    const fetchedDataDisplay = dataFetched.map(function(item){
+        return(
+            <div>
+                <h3>{item.data}</h3>
+            </div>
         )
     })
+
   return (
     <div>
         <h1>Enter the name of the subreddit</h1>
         <input type='text' placeholder='enter' value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
         <button onClick={handleAddReddit}>Add Subreddit</button>
-        {eleData}
+        {fetchedDataDisplay}
     </div>
   )
 }

@@ -1,9 +1,12 @@
-import React from 'react'
+import "./SubRedditCard.css";
 
 const SubRedditCard = () => {
   return (
-    <div>SubRedditCard</div>
-  )
-}
+    <div className="sidebar">
+      <p>SubRedditCard</p>
+      <div></div>
+    </div>
+  );
+};
 
-export default SubRedditCard
+export default SubRedditCard;
