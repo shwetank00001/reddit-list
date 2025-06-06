@@ -1,6 +1,8 @@
 import "./SubRedditCard.css";
+import React from "react";
 
-const SubRedditCard = (prop) => {
+const SubRedditCard = ((prop) => {
+  console.log("Child Rendered")
   return (
     <div>
       <div className="sidebar">
@@ -10,6 +12,6 @@ const SubRedditCard = (prop) => {
       
     </div>
   );
-};
+})
 
 export default SubRedditCard;
