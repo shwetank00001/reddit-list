@@ -25,28 +25,34 @@ const InputSubReddit = () => {
             console.log("listOfEnteredSubs", listOfEnteredSubs)
 
 
-    useEffect(() => {
-        async function fetchReddit(){
-            try {
-                const dataApi = await fetch(url);
-                const resp = await dataApi.json();
-                setFetchedData(resp);
-            } catch (error) {
-                console.log("Failed to fetch reddit API")
-            }
-        }
-        fetchReddit();
+    // useEffect(() => {
+    //     async function fetchReddit(){
+    //         try {
+    //             const dataApi = await fetch(url);
+    //             const resp = await dataApi.json();
+    //             setFetchedData(resp);
+    //         } catch (error) {
+    //             console.log("Failed to fetch reddit API")
+    //         }
+    //     }
+    //     fetchReddit();
 
-        console.log("The value of searched sub reddit is:", subreddit)
-        console.log(url)
-    }, [subreddit])
+    //     console.log("The value of searched sub reddit is:", subreddit)
+    //     console.log(url);
+    // }, [subreddit]);
+
+
+
+    const columnList = listOfEnteredSubs.map(function(item){
+        return <Columns headingProp = {item}  />
+    })
 
 
 
   return (
-    <globalContext.Provider value={{listOfEnteredSubs, dataFetched}}>
+    <globalContext.Provider value={{url, listOfEnteredSubs, dataFetched, setFetchedData, subreddit, setSubReddit}}>
         <div className='mainGrid'>
-            <Columns />
+            {columnList}
             <div>
                 <h1>Enter the name of the subreddit</h1>
                 <input type='text' placeholder='enter' value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
