@@ -1,66 +1,76 @@
-import  { useEffect, useState } from 'react'
-import SubRedditCard from './SubRedditCard.jsx'
-import Columns from './Columns.jsx'
-import {globalContext} from './globalContext.js'
-import './InputSubReddit.css'
+import { useEffect, useState } from 'react';
+import SubRedditCard from './SubRedditCard.jsx';
+import './InputSubReddit.css';
 
 const InputSubReddit = () => {
-    const [subreddit, setSubReddit] = useState('')
-    const url = `https://www.reddit.com/r/${subreddit}.json`;
+  const [inputValue, setInputValue] = useState('');
+  const [subreddit, setSubReddit] = useState('');
+  const [listOfFetchedSubs, setListOfFetchedSubs] = useState([]);
 
-    const [dataFetched, setFetchedData]= useState()
-    const [inputValue, setInputValue] = useState('');
+  const handleAddReddit = (e) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+    setSubReddit(inputValue.trim());
+    setInputValue('');
+  };
 
+  useEffect(() => {
+    if (!subreddit) return;
 
-    const [listOfEnteredSubs, setListOfEnteredSubs] = useState([]);
+    async function fetchReddit() {
+      try {
+        const url = `https://www.reddit.com/r/${subreddit}.json`;
+        const response = await fetch(url);
+        const result = await response.json();
 
-    const handleAddReddit = (e) => {
-        e.preventDefault();
-        setSubReddit(inputValue);
-        setListOfEnteredSubs(function(item){
-            return [...item, inputValue]
-        })
-        console.log("listOfEnteredSubs", listOfEnteredSubs)
+        setListOfFetchedSubs((prev) => [
+          ...prev,
+          {
+            subreddit,
+            posts: result.data.children,
+          },
+        ]);
+      } catch (error) {
+        console.log('Failed to fetch Reddit API', error);
+      }
     }
-            console.log("listOfEnteredSubs", listOfEnteredSubs)
 
-
-    // useEffect(() => {
-    //     async function fetchReddit(){
-    //         try {
-    //             const dataApi = await fetch(url);
-    //             const resp = await dataApi.json();
-    //             setFetchedData(resp);
-    //         } catch (error) {
-    //             console.log("Failed to fetch reddit API")
-    //         }
-    //     }
-    //     fetchReddit();
-
-    //     console.log("The value of searched sub reddit is:", subreddit)
-    //     console.log(url);
-    // }, [subreddit]);
-
-
-
-    const columnList = listOfEnteredSubs.map(function(item){
-        return <Columns headingProp = {item}  />
-    })
-
-
+    fetchReddit();
+  }, [subreddit]);
 
   return (
-    <globalContext.Provider value={{url, listOfEnteredSubs, dataFetched, setFetchedData, subreddit, setSubReddit}}>
-        <div className='mainGrid'>
-            {columnList}
-            <div>
-                <h1>Enter the name of the subreddit</h1>
-                <input type='text' placeholder='enter' value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-                <button onClick={handleAddReddit}>Add Subreddit</button>
-            </div>
+    <div className='container'>
+      <form className='subreddit-form' onSubmit={handleAddReddit}>
+        <h1 className='form-title'>📬 Subreddit Explorer</h1>
+        <div className='input-group'>
+          <input
+            type='text'
+            placeholder='e.g. reactjs'
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <button type='submit'>Fetch</button>
         </div>
-        {/* {ele} */}
-    </globalContext.Provider>
-  )
-}
-export default InputSubReddit
+      </form>
+
+      <div className='columns-wrapper'>
+        {listOfFetchedSubs.map((sub, index) => (
+          <div className='column' key={index}>
+            <h2 className='subreddit-title'>r/{sub.subreddit}</h2>
+            <div className='cards'>
+              {sub.posts.map((post) => (
+                <SubRedditCard
+                  key={post.data.id}
+                  valueProp={post.data.title}
+                  idProp={post.data.id}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default InputSubReddit;

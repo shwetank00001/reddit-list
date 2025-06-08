@@ -1,13 +1,15 @@
 import "./SubRedditCard.css";
 
-const SubRedditCard = (prop) => {
+const SubRedditCard = ({ idProp, valueProp }) => {
   return (
-    <div>
-      <div className="sidebar">
-        <a target="_blank" href={`https://www.reddit.com/r/learnprogramming/comments/${prop.idProp}/${prop.valueProp}/`}>{prop.valueProp}</a>
-        {/* <p>{prop.idProp}</p> */}
-      </div>
-      
+    <div className="subreddit-card">
+      <a
+        className="subreddit-link"
+        target="_blank"
+        href={`https://www.reddit.com/comments/${idProp}`}
+      >
+        {valueProp}
+      </a>
     </div>
   );
 };
